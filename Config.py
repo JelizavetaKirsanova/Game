@@ -2,6 +2,7 @@ import pygame as pg
 
 W = 600
 H = 600
+x_center, y_center = W / 2, H / 2
 WHITE = (255, 255, 255)
 
 pg.font.init()

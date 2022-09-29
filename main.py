@@ -11,27 +11,12 @@ import math
 from Config import *
 
 
-
-
 def paused(s, lvl):
-    textPar1 = pg.font.SysFont("Roboto", 110)
-    surface = textPar1.render(s, True, (0, 0, 0))
-    rect = surface.get_rect()
-    rect.center = (W / 2, H / 2)
-    sc.blit(surface, rect)
+    createTextBlock(s, fontsize=110)
 
-    textPar = pg.font.SysFont("Roboto", 50)
-    surface = textPar.render("play again", True, (255, 0, 0))
-    rect = surface.get_rect()
-    x, y = W / 2, H / 2 + 100
-    rect.center = (x, y)
-    sc.blit(surface, rect)
+    createTextBlock("play again", color=(255, 0, 0), y_shift=100)
 
-    surface = textPar.render("menu", True, (255, 0, 0))
-    rect = surface.get_rect()
-    x, y = W / 2, H / 2 + 200
-    rect.center = (x, y)
-    sc.blit(surface, rect)
+    createTextBlock("menu", color=(255, 0, 0), y_shift=200)
 
     pg.display.flip()
 
@@ -48,12 +33,10 @@ def paused(s, lvl):
 
         for i in pg.event.get():
             if i.type == pg.MOUSEBUTTONDOWN:
-                if pg.mouse.get_pos()[0] <= x + 100 and pg.mouse.get_pos()[0] >= x - 100 and pg.mouse.get_pos()[
-                    1] <= y + 20 and pg.mouse.get_pos()[1] >= y - 20:
+                if isClickInPos(pg.mouse.get_pos(), 100, -100, 220, 180):
                     menu()
 
-                if pg.mouse.get_pos()[0] <= x + 100 and pg.mouse.get_pos()[0] >= x - 100 and pg.mouse.get_pos()[
-                    1] <= y - 80 and pg.mouse.get_pos()[1] >= y - 130:
+                if isClickInPos(pg.mouse.get_pos(), 100, -100, 120, 70):
                     run(lvl)
 
             if i.type == pg.KEYDOWN:
@@ -222,54 +205,32 @@ def run(lvl):
                 player.direction = directions
 
         for car in cars:
-            if (player.shield):
-                if math.sqrt(
-                        (player.rect.x - car.rect.x) ** 2 + (player.rect.y - car.rect.y) ** 2) < 100 + car.width // 2:
-                    x = 0
-                    y = 0
-                    if player.rect.x < car.rect.x:
-                        x = W
-                    if player.rect.y < car.rect.y:
-                        y = H
-                    car.speed = player.speed
-                    car.update(x, y)
-                    car.speed = 1
+            if player.shield and getRange(player, car) < 100 + car.width // 2:
+                x = 0
+                y = 0
+                if player.rect.x < car.rect.x:
+                    x = W
+                if player.rect.y < car.rect.y:
+                    y = H
+                car.speed = player.speed
+                car.update(x, y)
+                car.speed = 1
 
-                elif (getRange(player, car) > getRange(food, car)) and (getRange(food2, car) > getRange(food, car)):
-                    car.update(food.rect.x, food.rect.y)
-                    car.image.fill((0, 255, 0))
+            elif (getRange(player, car) > getRange(food, car)) and (getRange(food2, car) > getRange(food, car)):
+                car.update(food.rect.x, food.rect.y)
+                car.image.fill((0, 255, 0))
 
-                elif getRange(player, car) > getRange(food2, car) and getRange(food3, car) > getRange(food2, car):
-                    car.update(food2.rect.x, food2.rect.y)
-                    car.image.fill((255, 255, 0))
+            elif getRange(player, car) > getRange(food2, car) and getRange(food3, car) > getRange(food2, car):
+                car.update(food2.rect.x, food2.rect.y)
+                car.image.fill((255, 255, 0))
 
-                elif getRange(player, car) > getRange(food3, car):
-                    car.update(food3.rect.x, food3.rect.y)
-                    car.image.fill((255, 150, 254))
-
-                elif math.sqrt((car.rect.x - W // 2) ** 2 + (car.rect.y - H // 2) ** 2) < 50:
-                    print("dssd")
-                else:
-                    car.image.fill((255, 0, 0))
-                    car.update(player.rect.x, player.rect.y)
-
-
+            elif getRange(player, car) > getRange(food3, car):
+                car.update(food3.rect.x, food3.rect.y)
+                car.image.fill((255, 150, 254))
 
             else:
-                if (getRange(player, car) > getRange(food, car)) and (getRange(food2, car) > getRange(food, car)):
-                    car.update(food.rect.x, food.rect.y)
-                    car.image.fill((0, 255, 0))
-
-                elif getRange(player, car) > getRange(food2, car) and getRange(food3, car) > getRange(food2, car):
-                    car.update(food2.rect.x, food2.rect.y)
-                    car.image.fill((255, 255, 0))
-
-                elif getRange(player, car) > getRange(food3, car):
-                    car.image.fill((255, 150, 254))
-
-                else:
-                    car.image.fill((255, 0, 0))
-                    car.update(player.rect.x, player.rect.y)
+                car.image.fill((255, 0, 0))
+                car.update(player.rect.x, player.rect.y)
 
         hits = pg.sprite.spritecollide(player, cars, False)
 
