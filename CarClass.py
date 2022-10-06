@@ -1,41 +1,20 @@
 from Config import *
 import threading
+from EntityClass import EntityClass
 
-
-class Car(pg.sprite.Sprite):
+class Car(EntityClass):
     def __init__(self, x, y):
-        pg.sprite.Sprite.__init__(self)
+        EntityClass.__init__(self)
         self.hight = 50
         self.width = 50
-        self.image = pg.Surface((50, 50))
         self.image.fill((0, 255, 0))
         self.rect = self.image.get_rect(center=(x, y))
         self.point = [0, 0]
         self.path = []
-        self.speed = 1
-        self.timer = ""
         self.isDoneX = False
         self.isDoneY = False
-        self.score = 0
 
-    def plusScore(self):
-        self.score += 10
 
-    def toPlayer(self):
-        x = player.rect.x
-        y = player.rect.y
-
-        bool = True
-        while bool:
-            if (x - self.rect.x) % self.speed != 0:
-                x = player.rect.x + 1
-            if (y - self.rect.y) % self.speed != 0:
-                y = player.rect.y + 1
-
-            if (x - self.rect.x) % self.speed == 0 and (y - self.rect.y) % self.speed == 0:
-                bool = False
-
-        self.point = [x, y]
 
     def sizeBack(self):
         self.hight = 50
@@ -43,9 +22,6 @@ class Car(pg.sprite.Sprite):
         self.image = pg.Surface((50, 50))
         self.timer.cancel()
 
-    def speedBack(self):
-        self.speed = 1
-        self.timer.cancel()
 
     def sizePlus(self):
         if self.hight < 80 and self.width < 80:
@@ -61,14 +37,6 @@ class Car(pg.sprite.Sprite):
             self.timer = threading.Timer(10.0, self.sizeBack)
             self.timer.start()
 
-    def plusSpeed(self):
-        if self.speed <= 3:
-            self.speed += 1
-            self.timer = threading.Timer(10.0, self.speedBack)
-            self.timer.start()
-        else:
-            self.speed = 1
-            self.timer.cancel()
 
     def update(self, x, y):
 

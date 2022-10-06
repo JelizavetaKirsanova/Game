@@ -55,6 +55,8 @@ def run(lvl):
     f = pg.font.SysFont(None, 30)
     cars = pg.sprite.Group()
 
+    player = Player()
+
     if lvl == 1:
         for i in range(1):
             car = Car(randint(1, W), randint(1, H - 200))
@@ -70,7 +72,7 @@ def run(lvl):
             car = Car(randint(1, W), randint(1, H - 200))
             cars.add(car)
 
-    player = Player()
+
 
     food2 = Food(randint(1, W), randint(1, H))
     food2.image.fill((255, 255, 0))
@@ -102,10 +104,9 @@ def run(lvl):
                 b = True
 
         walls.add(wall)
-    listX = []
-    listY = []
-    while 1:
 
+    while 1:
+        print(player.speed)
         sc.fill(WHITE)
 
         color = (255, 255, 255)
@@ -131,21 +132,6 @@ def run(lvl):
             if car.score >= 1000:
                 paused("Enemy win!", lvl)
 
-        # player.direction = {"v": "", "h": ""}
-
-        # if len(listX) < 75:
-        # listX.append(player.rect.x)
-
-        # if len(listY) < 75:
-        # listY.append(player.rect.y)
-
-        # if (len(listX) == 75 and len(listY) == 75) and (sum(listX) / 75 <= listX[0] + 2) and (sum(listY) / 75 <= listY[0] + 2):
-        # if (len(listX) == 50 and len(listY) == 50) and ((sum(listX) / 50  > listX[0] + 15 and sum(listY) / 50 > listY[0] + 15) and (listX[0] >= sum(listX) / 50 and listY[0] >= sum(listY) / 50)) or ((sum(listX) / 50 < listX[0] + 15 and sum(listY)/ 50 < listY[0] + 15) and (listX[0] <= sum(listX) / 50 and listY[0] <= sum(listY) / 50)):
-        # paused("BUG")
-        # elif (len(listX) == 75 and len(listY) == 75):
-        # listX = []
-        # listY = []
-
         for wall in walls:
             for car in cars:
                 x = car.point[0]
@@ -156,9 +142,8 @@ def run(lvl):
                     y1 = y - car.rect.y
 
                     if (x1 < 0 and y1 < 0) or (x1 > 0 and y1 > 0):
-                        if math.sqrt((car.rect.x - wall.rect.x + 100) ** 2 + (
-                                car.rect.y - wall.rect.y + 100) ** 2) < math.sqrt(
-                            (car.rect.x - wall.rect.x - 100) ** 2 + (car.rect.y - wall.rect.y - 100) ** 2):
+
+                        if getRange(car, wall, 100, 100) < getRange(car, wall, -100, -100):
                             x2 = wall.rect.x - 100
                             y2 = wall.rect.y - 100
                             if x2 != car.point[0] and y2 != car.point[1]:
@@ -171,9 +156,7 @@ def run(lvl):
                                 car.path.append(car.point)
                                 car.point = [x2, y2]
                     else:
-                        if math.sqrt((car.rect.x - wall.rect.x - 100) ** 2 + (
-                                car.rect.y - wall.rect.y + 100) ** 2) < math.sqrt(
-                            (car.rect.x - wall.rect.x + 100) ** 2 + (car.rect.y - wall.rect.y - 100) ** 2):
+                        if getRange(car, wall, -100, 100) < getRange(car, wall, 100, -100):
                             x2 = wall.rect.x + 100
                             y2 = wall.rect.y - 100
                             if x2 != car.point[0] and y2 != car.point[1]:
@@ -274,7 +257,7 @@ def run(lvl):
         if pg.sprite.spritecollide(player, foods3, True):
             food3.UpdateLocation()
             foods3.add(food3)
-            player.randomPoint()
+            player.randomPoint(cars, walls, PlayerS)
 
         for car in cars:
             if pg.sprite.spritecollide(car, foods, False):
@@ -369,7 +352,7 @@ def menu():
 
         for i in pg.event.get():
             if i.type == pg.MOUSEBUTTONDOWN:
-                if  isClickInPos(pg.mouse.get_pos(), 100, -100, 50, 10):
+                if isClickInPos(pg.mouse.get_pos(), 100, -100, 50, 10):
                     run(1)
                 if isClickInPos(pg.mouse.get_pos(), 100, -100, 100, 60):
                     run(2)
