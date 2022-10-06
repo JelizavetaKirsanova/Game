@@ -151,7 +151,7 @@ def run(lvl):
                 x = car.point[0]
                 y = car.point[1]
 
-                if math.sqrt((car.rect.x - wall.rect.x) ** 2 + (car.rect.y - wall.rect.y) ** 2) < 50:
+                if getRange(car,wall) < 50:
                     x1 = x - car.rect.x
                     y1 = y - car.rect.y
 
@@ -186,7 +186,7 @@ def run(lvl):
                                 car.path.append(car.point)
                                 car.point = [x2, y2]
 
-            if math.sqrt((player.rect.x - wall.rect.x) ** 2 + (player.rect.y - wall.rect.y) ** 2) < wall.width + 5:
+            if getRange(player,wall) < wall.width + 5:
                 directions = player.direction
                 # print(directions)
 
@@ -369,14 +369,11 @@ def menu():
 
         for i in pg.event.get():
             if i.type == pg.MOUSEBUTTONDOWN:
-                if pg.mouse.get_pos()[0] <= W / 2 + 100 and pg.mouse.get_pos()[0] >= W / 2 - 100 and pg.mouse.get_pos()[
-                    1] <= H / 2 + 30 + 20 and pg.mouse.get_pos()[1] >= H / 2 + 30 - 20:
+                if  isClickInPos(pg.mouse.get_pos(), 100, -100, 50, 10):
                     run(1)
-                if pg.mouse.get_pos()[0] <= W / 2 + 100 and pg.mouse.get_pos()[0] >= W / 2 - 100 and pg.mouse.get_pos()[
-                    1] <= H / 2 + 80 + 20 and pg.mouse.get_pos()[1] >= H / 2 + 80 - 20:
+                if isClickInPos(pg.mouse.get_pos(), 100, -100, 100, 60):
                     run(2)
-                if pg.mouse.get_pos()[0] <= W / 2 + 100 and pg.mouse.get_pos()[0] >= W / 2 - 100 and pg.mouse.get_pos()[
-                    1] <= H / 2 + 130 + 20 and pg.mouse.get_pos()[1] >= H / 2 + 130 - 20:
+                if isClickInPos(pg.mouse.get_pos(), 100, -100, 150, 110):
                     run(3)
 
         pg.display.flip()
