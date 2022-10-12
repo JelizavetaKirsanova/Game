@@ -106,7 +106,6 @@ def run(lvl):
         walls.add(wall)
 
     while 1:
-        print(player.speed)
         sc.fill(WHITE)
 
         color = (255, 255, 255)
@@ -115,6 +114,7 @@ def run(lvl):
 
         pg.draw.circle(sc, color, (player.rect.x + 25, player.rect.y + 25), 100)
         pg.draw.circle(sc, (255, 255, 255), (player.rect.x + 25, player.rect.y + 25), 90)
+        pg.draw.rect(sc, (220, 220, 220), ((W/2)-50, (H/2)-50, 100, 100))
 
         foods.draw(sc)
         foods2.draw(sc)
@@ -188,6 +188,30 @@ def run(lvl):
                 player.direction = directions
 
         for car in cars:
+            x_list = []
+            y_list = []
+
+            if len(x_list) < 50:
+                x_list.append(car.rect.x)
+
+            else:
+                x_list = []
+
+            if len(y_list) < 50:
+                y_list.append(car.rect.y)
+
+            else:
+                y_list = []
+
+            print(y_list)
+            #print(x_list[0] - sum(x_list) / 50)
+            #print(y_list[0] - sum(y_list) / 50)
+
+            if (len(x_list) == 50 and len(y_list) == 50) and (((x_list[0] - sum(x_list) / 50)<= 30) and (
+                    (y_list[0] - sum(y_list) / 50) <=30 and sum(x_list) / 50 >= 100)):
+                car.rect.x = W/2
+                car.rect.y = H/2
+
             if player.shield and getRange(player, car) < 100 + car.width // 2:
                 x = 0
                 y = 0
