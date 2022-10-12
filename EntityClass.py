@@ -44,6 +44,7 @@ class EntityClass(pg.sprite.Sprite):
         pass
 
     def randomPoint(self, cars, walls, playerS):
+        self.plusScore()
         x = randint(1, W)
         y = randint(1, H)
 

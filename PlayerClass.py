@@ -35,7 +35,7 @@ class Player(EntityClass):
                 self.rect.x = W + 50
 
     def protectAround(self):
-        self.score += 10
+        self.plusScore()
         if self.timer != "":
             self.timer.cancel()
         self.timer = threading.Timer(0.1, self.protect)

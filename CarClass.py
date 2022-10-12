@@ -15,7 +15,6 @@ class Car(EntityClass):
         self.isDoneY = False
 
 
-
     def sizeBack(self):
         self.hight = 50
         self.width = 50
@@ -24,6 +23,7 @@ class Car(EntityClass):
 
 
     def sizePlus(self):
+        self.plusScore()
         if self.hight < 80 and self.width < 80:
             self.hight += 10
             self.width += 10

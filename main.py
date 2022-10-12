@@ -263,19 +263,16 @@ def run(lvl):
             if pg.sprite.spritecollide(car, foods, False):
                 food.UpdateLocation()
                 foods.add(food)
-                car.plusScore()
                 car.plusSpeed()
 
             if pg.sprite.spritecollide(car, foods3, False):
                 food3.UpdateLocation()
                 foods.add(food3)
-                car.plusScore()
-                car.image.fill((255, 150, 254))
+                car.randomPoint(cars,walls,PlayerS)
 
             if pg.sprite.spritecollide(car, foods2, False):
                 food2.UpdateLocation()
                 foods2.add(food2)
-                car.plusScore()
                 car.sizePlus()
 
         for i in pg.event.get():
