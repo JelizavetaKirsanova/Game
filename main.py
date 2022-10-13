@@ -1,3 +1,5 @@
+from statistics import mean
+
 from Functions import *
 from random import randint
 from ButtonClass import *
@@ -72,8 +74,6 @@ def run(lvl):
             car = Car(randint(1, W), randint(1, H - 200))
             cars.add(car)
 
-
-
     food2 = Food(randint(1, W), randint(1, H))
     food2.image.fill((255, 255, 0))
     foods2 = pg.sprite.Group()
@@ -107,24 +107,23 @@ def run(lvl):
 
     while 1:
         sc.fill(WHITE)
+        player.shield = True
 
-        color = (255, 255, 255)
-        if player.shield:
-            color = (128, 166, 255)
-
-        pg.draw.circle(sc, color, (player.rect.x + 25, player.rect.y + 25), 100)
-        pg.draw.circle(sc, (255, 255, 255), (player.rect.x + 25, player.rect.y + 25), 90)
-        pg.draw.rect(sc, (220, 220, 220), ((W/2)-50, (H/2)-50, 100, 100))
-
+        pg.draw.rect(sc, (220, 220, 220), ((W / 2) - 50, (H / 2) - 50, 100, 100))
         foods.draw(sc)
         foods2.draw(sc)
         foods3.draw(sc)
         PlayerS.update()
         cars.draw(sc)
-        PlayerS.draw(sc)
+
         foods.update()
         foods2.update()
         walls.draw(sc)
+
+        PlayerS.draw(sc)
+
+        if player.shield:
+            pg.draw.circle(sc, (128, 166, 255), (player.rect.x + 25, player.rect.y + 25), 100, 10)
 
         if player.score >= 100:
             paused("You win!", lvl)
@@ -137,39 +136,40 @@ def run(lvl):
                 x = car.point[0]
                 y = car.point[1]
 
-                if getRange(car,wall) < 50:
+                if getRange(car, wall) < 50:
                     x1 = x - car.rect.x
                     y1 = y - car.rect.y
-
+                    print(f'{x1} {y1}')
                     if (x1 < 0 and y1 < 0) or (x1 > 0 and y1 > 0):
 
                         if getRange(car, wall, 100, 100) < getRange(car, wall, -100, -100):
-                            x2 = wall.rect.x - 100
-                            y2 = wall.rect.y - 100
+                            x2 = wall.rect.x + 100
+                            y2 = wall.rect.y + 100
                             if x2 != car.point[0] and y2 != car.point[1]:
                                 car.path.append(car.point)
                                 car.point = [x2, y2]
+
                         else:
-                            x2 = wall.rect.x + 100
-                            y2 = wall.rect.y + 100
+                            x2 = wall.rect.x - 100
+                            y2 = wall.rect.y - 100
                             if x2 != car.point[0] and y2 != car.point[1]:
                                 car.path.append(car.point)
                                 car.point = [x2, y2]
                     else:
                         if getRange(car, wall, -100, 100) < getRange(car, wall, 100, -100):
-                            x2 = wall.rect.x + 100
-                            y2 = wall.rect.y - 100
-                            if x2 != car.point[0] and y2 != car.point[1]:
-                                car.path.append(car.point)
-                                car.point = [x2, y2]
-                        else:
                             x2 = wall.rect.x - 100
                             y2 = wall.rect.y + 100
                             if x2 != car.point[0] and y2 != car.point[1]:
                                 car.path.append(car.point)
                                 car.point = [x2, y2]
+                        else:
+                            x2 = wall.rect.x + 100
+                            y2 = wall.rect.y - 100
+                            if x2 != car.point[0] and y2 != car.point[1]:
+                                car.path.append(car.point)
+                                car.point = [x2, y2]
 
-            if getRange(player,wall) < wall.width + 5:
+            if getRange(player, wall) < wall.width + 5:
                 directions = player.direction
                 # print(directions)
 
@@ -188,29 +188,34 @@ def run(lvl):
                 player.direction = directions
 
         for car in cars:
-            x_list = []
-            y_list = []
+            x_stuck, y_stuck = False, False
 
-            if len(x_list) < 50:
-                x_list.append(car.rect.x)
-
-            else:
-                x_list = []
-
-            if len(y_list) < 50:
-                y_list.append(car.rect.y)
+            if len(car.x_list) < 30:
+                car.x_list.append(car.rect.x)
 
             else:
-                y_list = []
+                if car.x_list[-1] == mean(car.x_list):
+                    x_stuck = True
+                    # ("Застрял по X")
+                car.x_list.pop(0)
 
-            print(y_list)
-            #print(x_list[0] - sum(x_list) / 50)
-            #print(y_list[0] - sum(y_list) / 50)
+            if len(car.y_list) < 30:
+                car.y_list.append(car.rect.y)
 
-            if (len(x_list) == 50 and len(y_list) == 50) and (((x_list[0] - sum(x_list) / 50)<= 30) and (
-                    (y_list[0] - sum(y_list) / 50) <=30 and sum(x_list) / 50 >= 100)):
-                car.rect.x = W/2
-                car.rect.y = H/2
+            else:
+                if car.y_list[-1] == mean(car.y_list):
+                    y_stuck = True
+                    # print("Застрял по Y")
+                car.y_list.pop(0)
+
+            # print(y_list)
+            # print(x_list[0] - sum(x_list) / 50)
+            # print(y_list[0] - sum(y_list) / 50)
+
+            if x_stuck and y_stuck:
+                car.rect.x = W / 2 - 25
+                car.rect.y = H / 2 - 25
+                pass
 
             if player.shield and getRange(player, car) < 100 + car.width // 2:
                 x = 0
@@ -292,7 +297,7 @@ def run(lvl):
             if pg.sprite.spritecollide(car, foods3, False):
                 food3.UpdateLocation()
                 foods.add(food3)
-                car.randomPoint(cars,walls,PlayerS)
+                car.randomPoint(cars, walls, PlayerS)
 
             if pg.sprite.spritecollide(car, foods2, False):
                 food2.UpdateLocation()

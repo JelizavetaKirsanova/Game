@@ -12,4 +12,3 @@ pg.mixer.init()
 sc = pg.display.set_mode((W, H))
 pg.display.set_caption("Test Game")
 
-

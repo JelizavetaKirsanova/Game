@@ -13,6 +13,9 @@ class Car(EntityClass):
         self.path = []
         self.isDoneX = False
         self.isDoneY = False
+        self.x_list = []
+        self.y_list = []
+
 
 
     def sizeBack(self):
