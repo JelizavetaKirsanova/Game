@@ -98,8 +98,8 @@ def run(lvl):
         while b:
             b = False
             # if wall.rect.x == 200 and wall.rect.y == 500:
-            if ((wall.rect.x <= 200 + 100 and wall.rect.x >= 200 - 100) or (
-                    wall.rect.y <= 500 + 100 and wall.rect.y >= 500 - 100)):
+            if (wall.rect.x <= 200 + 100 and wall.rect.x >= 200 - 100) or (
+                    wall.rect.y <= 500 + 100 and wall.rect.y >= 500 - 100) or (center(wall) < 70):
                 wall = Walls(randint(0, W), randint(0, H), 50, 50)
                 b = True
 

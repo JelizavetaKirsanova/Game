@@ -21,3 +21,6 @@ def createTextBlock(text, font="Roboto", fontsize=50, color=(0, 0, 0), x_shift=0
     rect.center = (x_center + x_shift, y_center + y_shift)
     sc.blit(surface, rect)
 
+
+def center(a):
+    return math.sqrt((a.rect.x - x_center) ** 2 + (a.rect.y - y_center) ** 2)
